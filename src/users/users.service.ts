@@ -5,32 +5,32 @@ export class UsersService {
     private users = [
 
         {
-            id: '1',
+            id: 1,
             name: 'Alice',
             email: 'HwN1o@example.com',
             role: 'INTERN',
         },
         {
-            id: '2',
+            id: 2,
             name: 'Bob',
             email: 'wvOuP@example.com',
             role: 'INTERN',
         },
         {
-            id: '3',
+            id: 3,
             name: 'Charlie',
             email: 'f5A2q@example.com',
             role: 'ENGINEER',
 
         },
         {
-            id: '4',
+            id: 4,
             name: 'David',
             email: 'RyTtq@example.com',
             role: 'ENGINEER',
         },
         {
-            id: '5',
+            id: 5,
             name: 'Eve',
             email: 'admin@gmail.com',
             role: 'ADMIN',
@@ -45,13 +45,40 @@ export class UsersService {
         return this.users;
     }
 
-    findOne(id: string) {
+    findOne(id: number) {
         const user = this.users.find(user => user.id === id);
 
         return user;
     }
 
     create(user: { name: string; email: string; role: 'INTERN' | 'ENGINEER' | 'ADMIN' }) {
-        
+        const usersByHighestId = [...this.users].sort((a,b) => b.id - a.id) 
+        const newUser = {
+            id: usersByHighestId[0].id + 1, 
+            ...user
+        }
+        this.users.push(newUser);
+        return newUser;
+    }
+
+
+    update(id: number, updatedUser: { name?: string; email?: string; role?: 'INTERN' | 'ENGINEER' | 'ADMIN' }) {
+        this.users = this.users.map(user => {
+            if (user.id === id) {
+                return { ...user, ...updatedUser };
+            }
+            return user
+
+        })
+
+        return this.findOne(id);
+    }      
+    
+    delete(id: number) {
+        const removedUser = this.findOne(id);
+
+        this.users = this.users.filter(user => user.id !== id);
+        return removedUser;
+    }
 
 }
